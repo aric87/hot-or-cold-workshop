@@ -4,15 +4,15 @@ $(document).ready(function(){
 	/*--- Display information modal box ---*/
   	$(".what").click(function(){
     	$(".overlay").fadeIn(1000);
-
   	});
-
   	/*--- Hide information modal box ---*/
   	$("a.close").click(function(){
   		$(".overlay").fadeOut(1000);
   	});
 
+  	//initialize data variables
   	var secretNumber, userGuess, pastGuesses, count,guessHtml, userFeedback,alreadyGuessed;
+  	//fetch dom objects
   	var $newButton = $('a.new');
   	var $form = $('form');
   	var $input = $form.find('#userGuess');
@@ -22,6 +22,7 @@ $(document).ready(function(){
 
   	//page load
   	newGame();
+
   	//event handlers
   	$form.submit(function(event){
   		event.preventDefault();
@@ -31,34 +32,32 @@ $(document).ready(function(){
 
   	//new game function
   	function newGame(){
-  		count = 0;
-  		pastGuesses = [];
-  		guessHtml='';
-  		userGuess = '';
-  		userFeedback = 'Make your Guess!';
+  		resetVariables();
   		render();
   		generateNumber();
   	}
 
-  	//page render function
-  	function render(){
-  		$guessList.html(guessHtml);
-  		$count.html(count);
-  		$feedback.html(userFeedback);
-  	}
-
   	//get the user guess
   	function getUserGuess(){
+  		//get the user guess
   		userGuess = $input.val();
+  		//reset input value
   		$input.val('');
+  		//focus on input for next guess
   		$input.focus();
+  		//ensure valid input
   		if(checkGuess()){return};
+  		//generate feedback
+  		generateFeedback();
+  		//track the past user guesses
   		trackGuess();
+  		//increment the count
   		guessCount();
+  		//render changes to the page
   		render();
   	}
 
-  	//utility functions
+  	//check for valid input
   	function checkGuess(){
   		if(!(userGuess % 1 == 0)){
   			alert("please input a number");
@@ -78,7 +77,10 @@ $(document).ready(function(){
 			alert('You guessed this number already');
 			return true
 		}
+	}
 
+	//generate user feedback
+	function generateFeedback(){
   		if(Math.abs(secretNumber - userGuess) < 10){
   			userFeedback = 'hot';
   		} else if(Math.abs(secretNumber - userGuess) < 20 && Math.abs(secretNumber - userGuess) > 9){
@@ -90,16 +92,6 @@ $(document).ready(function(){
   		}
   	}
 
-
-
-  	function generateNumber(){
-  		secretNumber = Math.floor(Math.random()*100)+1
-  	};
-
-  	//keep track of guess count
-  	function guessCount(){
-  		count++;
-  	}
   	//keep track of the users past guesses
   	function trackGuess(){
   		pastGuesses.push(userGuess);
@@ -111,6 +103,35 @@ $(document).ready(function(){
   		}
   	}
 
+  	//keep track of guess count
+  	function guessCount(){
+  		count++;
+  	}
+
+  		//page render function
+  	function render(){
+  		$guessList.html(guessHtml);
+  		$count.html(count);
+  		$feedback.html(userFeedback);
+  	}
+
+  	//generate secret number
+  	function generateNumber(){
+  		secretNumber = Math.floor(Math.random()*100)+1;
+  	}
+  	
+  	//reset variable 
+  	function resetVariables(){
+  		count = 0;
+  		pastGuesses = [];
+  		guessHtml='';
+  		userGuess = '';
+  		userFeedback = 'Make your Guess!';
+  	}
+  	
+  	
+
+  
 
 });
 
