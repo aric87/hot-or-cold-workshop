@@ -32,6 +32,7 @@ $(document).ready(function(){
 
   	//new game function
   	function newGame(){
+  		$form.find('input[type=submit]').css('opacity','1');
   		resetVariables();
   		render();
   		generateNumber();
@@ -81,7 +82,9 @@ $(document).ready(function(){
 
 	//generate user feedback
 	function generateFeedback(){
-  		if(Math.abs(secretNumber - userGuess) < 10){
+  		if(secretNumber == userGuess){
+  			winner();
+  		} else if(Math.abs(secretNumber - userGuess) < 10){
   			userFeedback = 'hot';
   		} else if(Math.abs(secretNumber - userGuess) < 20 && Math.abs(secretNumber - userGuess) > 9){
   			userFeedback = ' Kinda hot';
@@ -115,11 +118,16 @@ $(document).ready(function(){
   		$feedback.html(userFeedback);
   	}
 
+  	function winner(){
+  		userFeedback = "You Won. Click new game to play again";
+  		$form.find('input[type=submit]')..css('opacity','0');
+  	}
+  	
   	//generate secret number
   	function generateNumber(){
   		secretNumber = Math.floor(Math.random()*100)+1;
   	}
-  	
+
   	//reset variable 
   	function resetVariables(){
   		count = 0;
