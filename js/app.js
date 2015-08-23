@@ -1,5 +1,21 @@
+//initialize variables
+var secretNumber, 
+userGuess, 
+pastGuesses, 
+count,
+guessHtml, 
+userFeedback,
+alreadyGuessed,
+$newButton,
+$form ,
+$input,
+$feedback,
+$count,
+$guessList;
 
-$(document).ready(function(){
+$(document).ready(pageLoad);
+
+  function pageLoad(){
 	
 	/*--- Display information modal box ---*/
   	$(".what").click(function(){
@@ -10,25 +26,23 @@ $(document).ready(function(){
   		$(".overlay").fadeOut(1000);
   	});
 
-  	//initialize data variables
-  	var secretNumber, userGuess, pastGuesses, count,guessHtml, userFeedback,alreadyGuessed;
   	//fetch dom objects
-  	var $newButton = $('a.new');
-  	var $form = $('form');
-  	var $input = $form.find('#userGuess');
-  	var $feedback = $('#feedback');
-  	var $count = $('#count');
-  	var $guessList = $('#guessList');
+  	$newButton = $('a.new');
+  	$form = $('form');
+  	$input = $form.find('#userGuess');
+  	$feedback = $('#feedback');
+  	$count = $('#count');
+  	$guessList = $('#guessList');
 
-  	//page load
-  	newGame();
-
-  	//event handlers
-  	$form.submit(function(event){
-  		event.preventDefault();
-  		getUserGuess();
-  	});
-  	$newButton.click(newGame);
+    //page load
+    // newGame();
+    //event handlers
+    $form.submit(function(event){
+      event.preventDefault();
+      getUserGuess();
+    });
+    $newButton.click(newGame);
+};
 
   	//new game function
   	function newGame(){
@@ -78,6 +92,7 @@ $(document).ready(function(){
 			alert('You guessed this number already');
 			return true
 		}
+    return false
 	}
 
 	//generate user feedback
@@ -99,7 +114,7 @@ $(document).ready(function(){
   	function trackGuess(){
   		pastGuesses.push(userGuess);
   		guessHtml = ""
-  		if(pastGuesses.length) {
+  		if(pastGuesses[0].length) {
   			$.each(pastGuesses,function(guess,value){
   				guessHtml += '<li>'+value+'</li>'
   			})
@@ -120,7 +135,7 @@ $(document).ready(function(){
 
   	function winner(){
   		userFeedback = "You Won. Click new game to play again";
-  		$form.find('input[type=submit]')..css('opacity','0');
+  		$form.find('input[type=submit]').css('opacity','0');
   	}
   	
   	//generate secret number
@@ -141,6 +156,6 @@ $(document).ready(function(){
 
   
 
-});
+
 
 
