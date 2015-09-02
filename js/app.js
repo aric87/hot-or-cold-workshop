@@ -67,7 +67,7 @@ $(document).ready(pageLoad);
   		//track the past user guesses
   		trackGuess();
   		//increment the count
-  		guessCount();
+  		guessCount(count);
   		//render changes to the page
   		render();
   	}
@@ -122,8 +122,8 @@ $(document).ready(pageLoad);
   	}
 
   	//keep track of guess count
-  	function guessCount(){
-  		count++;
+  	function guessCount(count){
+  		return count++;
   	}
 
   		//page render function
@@ -152,6 +152,7 @@ $(document).ready(pageLoad);
   		userFeedback = 'Make your Guess!';
   	}
   	
+
   	
 
   
