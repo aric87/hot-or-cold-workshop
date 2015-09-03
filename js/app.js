@@ -11,7 +11,32 @@
 			domElements.$input.val('');
 			domElements.$input.focus();
 			return gameData.userGuess
-		}
+		},
+		init:function(){
+			this.$newButton = $('a.new');
+			this.$form = $('form');
+			this.$input = domElements.$form.find('#userGuess');
+			this.$feedback = $('#feedback');
+			this.$count = $('#count');
+			this.$guessList = $('#guessList');
+			$(".what").click(function(){
+				$(".overlay").fadeIn(1000);
+			});
+			/*--- Hide information modal box ---*/
+			$("a.close").click(function(){
+				$(".overlay").fadeOut(1000);
+			});
+			this.$form.submit(function(event){
+				event.preventDefault();
+				gameActions.getUserGuess();
+			});
+			this.$newButton.click(gameActions.newGame);
+		},
+		render: function (){
+			this.$guessList.html(gameData.guessHtml);
+			this.$count.html(gameData.count);
+			this.$feedback.html(gameData.userFeedback);
+		},
 	};
 	var gameData = {
 		secretNumber:'',
@@ -43,7 +68,42 @@
 		},
 		setGuess: function (){
 			this.trackGuesses();
-			gameActions.render();
+			domElements.render();
+		},
+		checkGuess: function (){
+			if(!(this.userGuess % 1 == 0)){
+				alert("please input a number");
+				return true
+			}
+			if(!(this.userGuess > 0) || !(this.userGuess < 101)){
+				alert("please choose a number between zero and 100");
+				return true
+			}
+			$.each(this.pastGuesses,function(guess,value){
+				if(gameData.userGuess == value){
+					gameData.alreadyGuessed = true
+				}
+			});
+			if(this.alreadyGuessed){
+				gameData.alreadyGuessed =false;
+				alert('You guessed this number already');
+				return true
+			}
+			this.generateFeedback();
+			return false
+		},
+		generateFeedback: function (){
+			if(this.secretNumber == this.userGuess){
+				this.winner();
+			} else if(Math.abs(this.secretNumber - this.userGuess) < 10){
+				this.userFeedback = 'hot';
+			} else if(Math.abs(this.secretNumber - this.userGuess) < 20 && Math.abs(this.secretNumber - this.userGuess) > 9){
+				this.userFeedback = ' Kinda hot';
+			} else if(Math.abs(this.secretNumber - this.userGuess) < 30 && Math.abs(this.secretNumber - this.userGuess) > 19){
+				this.userFeedback = 'less than warm';
+			} else {
+				this.userFeedback = "cold"
+			}
 		}
 
 	};
@@ -52,24 +112,8 @@
 
 	var gameActions = {
 		pageLoad:function () {
-			domElements.$newButton = $('a.new');
-			domElements.$form = $('form');
-			domElements.$input = domElements.$form.find('#userGuess');
-			domElements.$feedback = $('#feedback');
-			domElements.$count = $('#count');
-			domElements.$guessList = $('#guessList');
-			$(".what").click(function(){
-				$(".overlay").fadeIn(1000);
-			});
-			/*--- Hide information modal box ---*/
-			$("a.close").click(function(){
-				$(".overlay").fadeOut(1000);
-			});
-			domElements.$form.submit(function(event){
-				event.preventDefault();
-				gameActions.getUserGuess();
-			});
-			domElements.$newButton.click(gameActions.newGame);
+			domElements.init();
+			this.newGame();
 		},
 		newGame:function(){
 			domElements.$form.find('input[type=submit]').css('opacity','1');
@@ -79,15 +123,10 @@
 		},
 		getUserGuess:function (){
 			domElements.popInputValue();
-			var trackGuess = !filters.checkGuess();
+			var trackGuess = !gameData.checkGuess();
 			if(trackGuess){
 				gameData.setGuess();
 			}
-		},
-		render: function (){
-			domElements.$guessList.html(gameData.guessHtml);
-			domElements.$count.html(gameData.count);
-			domElements.$feedback.html(gameData.userFeedback);
 		},
 		winner: function (){
 			gameData.userFeedback = "You Won. Click new game to play again";
@@ -96,45 +135,10 @@
 
 	};
 
-	var filters = {
-		checkGuess: function (){
-			if(!(gameData.userGuess % 1 == 0)){
-				alert("please input a number");
-				return true
-			}
-			if(!(gameData.userGuess > 0) || !(gameData.userGuess < 101)){
-				alert("please choose a number between zero and 100");
-				return true
-			}
-			$.each(gameData.pastGuesses,function(guess,value){
-				if(gameData.userGuess == value){
-					gameData.alreadyGuessed = true
-				}
-			});
-			if(gameData.alreadyGuessed){
-				gameData.alreadyGuessed =false;
-				alert('You guessed this number already');
-				return true
-			}
-			this.generateFeedback();
-			return false
-		},
-		generateFeedback: function (){
-			if(gameData.secretNumber == gameData.userGuess){
-				gameActions.winner();
-			} else if(Math.abs(gameData.secretNumber - gameData.userGuess) < 10){
-				gameData.userFeedback = 'hot';
-			} else if(Math.abs(gameData.secretNumber - gameData.userGuess) < 20 && Math.abs(gameData.secretNumber - gameData.userGuess) > 9){
-				gameData.userFeedback = ' Kinda hot';
-			} else if(Math.abs(gameData.secretNumber - gameData.userGuess) < 30 && Math.abs(gameData.secretNumber - gameData.userGuess) > 19){
-				gameData.userFeedback = 'less than warm';
-			} else {
-				gameData.userFeedback = "cold"
-			}
-		}
-	};
+
 
 	$(document).ready(gameActions.pageLoad);
+
 window.game = {
 	gameData:gameData,
 	gameActions:gameActions,
