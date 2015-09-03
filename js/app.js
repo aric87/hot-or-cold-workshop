@@ -55,6 +55,8 @@
 			this.guessHtml='';
 			this.userGuess = '';
 			this.userFeedback = 'Make your Guess!';
+			this.generateNumber();
+			domElements.render();
 		},
 		trackGuesses:function (){
 			this.count++;
@@ -104,6 +106,10 @@
 			} else {
 				this.userFeedback = "cold"
 			}
+		},
+		winner: function (){
+			this.userFeedback = "You Won. Click new game to play again";
+			domElements.$form.find('input[type=submit]').css('opacity','0');
 		}
 
 	};
@@ -113,13 +119,11 @@
 	var gameActions = {
 		pageLoad:function () {
 			domElements.init();
-			this.newGame();
+			gameActions.newGame();
 		},
 		newGame:function(){
 			domElements.$form.find('input[type=submit]').css('opacity','1');
 			gameData.resetVariables();
-			gameData.generateNumber();
-			gameActions.render();
 		},
 		getUserGuess:function (){
 			domElements.popInputValue();
@@ -127,12 +131,7 @@
 			if(trackGuess){
 				gameData.setGuess();
 			}
-		},
-		winner: function (){
-			gameData.userFeedback = "You Won. Click new game to play again";
-			domElements.$form.find('input[type=submit]').css('opacity','0');
 		}
-
 	};
 
 
